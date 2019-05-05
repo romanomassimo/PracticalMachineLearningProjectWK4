@@ -3,16 +3,21 @@ Prediction Assignment
 
 ## load data
 testing <- read.csv("~/Data/pml-testing.csv", header=TRUE)
+
 training <- read.csv("~/Data/pml-training.csv", header=TRUE)
 
 ## preprocessing
-    ## remove near Zero Variance
+    # remove near Zero Variance
 nzv <- nearZeroVar(training)
+
 training <- training[,-nzv]
-    ## remove NA variables
+
+    # remove NA variables
 nacol <- !is.na(training)[1,]
+
 training <- training[,nacol]
-    ## remove identification variables
+    
+    # remove identification variables
 training <- training[,-c(1:6)]
 
 ## data partitioning: large number of obs, thus decided to create two partitions
