@@ -42,7 +42,7 @@ rpart.model <- train(classe~.,data=train, method="rpart")
 
 rpart.predict <- predict(rpart.model, test)
 
-## expected out of sample error is Accuracy :    
+## expected out of sample error is Accuracy : 0.4912  
 confusionMatrix(rpart.predict,test$classe)
 
 ## boosted model
@@ -50,7 +50,7 @@ gbm.model <- train(classe~.,data=train, method="gbm")
 
 gbm.predict <- predict(gbm.model, test)
 
-## expected out of sample error is Accuracy :    
+## expected out of sample error is Accuracy : 0.9626   
 confusionMatrix(gbm.predict,test$classe)
 
 ## random forest model
