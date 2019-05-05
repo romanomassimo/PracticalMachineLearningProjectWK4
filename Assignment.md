@@ -20,7 +20,7 @@ training <- training[,nacol]
     ## remove identification variables
 training <- training[,-c(1:6)]
 
-## data partitioning: large number of obs, thus decided to create two partitions
+## training data partitioning: large number of obs, thus decided to create two partitions
 inTrain <- createDataPartition(training$classe,p=0.7, list = FALSE)
 
 train <- training[inTrain,]
@@ -62,7 +62,6 @@ rf.predict <- predict(rf.model, test)
 confusionMatrix(rf.predict,test$classe)
 
 ## prediction using best out-of-sample performing model => random forest
-testing <- read.csv("~/J&J/Machine Learning/Applied ML in R/Project/Data/pml-testing.csv", header=TRUE)
 
 testing <- testing[,-nzv];testing <- testing[,nacol];testing <- testing[,c(-1:6)]
 
