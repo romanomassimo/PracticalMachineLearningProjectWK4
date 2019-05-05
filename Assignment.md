@@ -20,7 +20,7 @@ training <- training[,nacol]
     ## remove identification variables
 training <- training[,-c(1:6)]
 
-## training data partitioning: large number of obs, thus decided to create two partitions
+## training data cross-validation: large number of obs, thus decided to create two partitions
 inTrain <- createDataPartition(training$classe,p=0.7, list = FALSE)
 
 train <- training[inTrain,]
