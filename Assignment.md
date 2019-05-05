@@ -2,8 +2,8 @@
 Prediction Assignment
 
 ## load data
-testing <- read.csv("~/J&J/Machine Learning/Applied ML in R/Project/Data/pml-testing.csv", header=TRUE)
-training <- read.csv("~/J&J/Machine Learning/Applied ML in R/Project/Data/pml-training.csv", header=TRUE)
+testing <- read.csv("~/Data/pml-testing.csv", header=TRUE)
+training <- read.csv("~/Data/pml-training.csv", header=TRUE)
 
 ## preprocessing
     ## remove near Zero Variance
