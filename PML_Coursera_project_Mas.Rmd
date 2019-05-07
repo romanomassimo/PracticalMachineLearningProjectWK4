@@ -1,0 +1,133 @@
+---
+title: "Practical Machine Learning Course Project"
+author: "Massimo"
+date: "06 05 2019"
+output: html_document
+---
+
+## load data
+    testing <- read.csv("~/Data/pml-testing.csv", header=TRUE)
+    training <- read.csv("~/Data/pml-training.csv", header=TRUE)
+
+## preprocessing data
+remove near Zero Variance
+    nzv <- nearZeroVar(training)
+    training <- training[,-nzv]
+
+remove NA variables
+    nacol <- !is.na(training)[1,]
+    training <- training[,nacol]
+
+remove identification variables (arbitrary variables)
+    training <- training[,-c(1:6)]
+
+## cross-validation: we seperate the training set into two (70% training and 30% validation to test the out-of-sample performance of several models.
+    inTrain <- createDataPartition(training$classe,p=0.7, list = FALSE)
+    train <- training[inTrain,]
+
+## we will use the test set to test our out of sample accuracy
+    test <- training[-inTrain,]
+
+### test several models and select highest accuracy 
+model n1: linear discriminant analysis model
+   
+    lda.model <- train(classe~.,data=train, method="lda")
+    lda.predict <- predict(lda.model, test)
+
+expected out of sample error
+    
+    confusionMatrix(lda.predict,test$classe)
+
+    Confusion Matrix and Statistics
+    Prediction    A    B    C    D    E
+             A 1390  164   99   58   42
+             B   39  738  102   38  168
+             C  126  134  685  105  113
+             D  111   43  121  715  100
+             E    8   60   19   48  659
+
+    Overall Statistics
+                                         
+               Accuracy : 0.7115         
+                 95% CI : (0.6997, 0.723)
+
+
+model n2: classification tree model
+    
+    rpart.model <- train(classe~.,data=train, method="rpart")
+    rpart.predict <- predict(rpart.model, test)
+
+expected out of sample error
+    
+    confusionMatrix(rpart.predict,test$classe)
+
+    Confusion Matrix and Statistics
+    Prediction    A    B    C    D    E
+             A 1004  171   24   52   16
+             B    8  206   17    8    5
+             C  345  207  698  286  227
+             D  314  555  287  618  353
+             E    3    0    0    0  481
+
+    Overall Statistics
+                                          
+               Accuracy : 0.511           
+                 95% CI : (0.4981, 0.5238)
+                
+model n3: boosted model
+   
+    gbm.model <- train(classe~.,data=train, method="gbm")
+    gbm.predict <- predict(gbm.model, test)
+
+expected out of sample error
+    
+    confusionMatrix(gbm.predict,test$classe)
+    
+    Confusion Matrix and Statistics
+    Prediction    A    B    C    D    E
+             A 1649   36    0    3    1
+             B   20 1070   26    4   10
+             C    4   30  987   28   13
+             D    0    2   12  920    5
+             E    1    1    1    9 1053
+
+    Overall Statistics
+                                        
+               Accuracy : 0.965         
+                 95% CI : (0.96, 0.9695)
+
+
+model n4: random forest model
+   
+    rf.model <- train(classe~.,data=train, method="rf")
+    rf.predict <- predict(rf.model, test)
+
+expected out of sample error
+   
+    confusionMatrix(rf.predict,test$classe)
+
+    Confusion Matrix and Statistics
+    Prediction    A    B    C    D    E
+             A 1673   11    0    0    0
+             B    1 1119    6    0    0
+             C    0    9 1014   12    3
+             D    0    0    6  951    0
+             E    0    0    0    1 1079
+
+    Overall Statistics
+                                         
+               Accuracy : 0.9917         
+                 95% CI : (0.989, 0.9938)
+
+## prediction using best out-of-sample performing model
+random forest has the best out-of-sample performance
+          
+    model     rf      gbm     lda     rpart  
+    accuracy  0.9917  0.965  0.7115  0.511
+    
+## apply data processing and model to predict on the validation dataset
+    testing <- read.csv("~/Data/pml-testing.csv", header=TRUE)
+    testing <- testing[,-nzv];testing <- testing[,nacol];testing <- testing[,c(-1:6)]
+    testing.predict <- predict(rf.model,testing)
+
+    data.frame(testing.predict)
